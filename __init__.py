@@ -1,0 +1,1 @@
+from main.jobPostFinder import get_job_from_linkedin
