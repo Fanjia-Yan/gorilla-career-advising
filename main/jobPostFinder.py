@@ -1,5 +1,6 @@
 from typing import Dict
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from utils import login_linkedin, get_job_info_from_browser,request_to_indeed
 
 import json
@@ -44,7 +45,7 @@ def get_job_from_linkedin(username : str,
 
 def get_job_from_indeed(keyword : str,
                         location : str,
-                        salary : str,
+                        salary : int,
                         experience : str
                         ) -> str:
     """
@@ -72,8 +73,5 @@ def get_job_from_indeed(keyword : str,
     # Install Chrome Driver as the browser.
     browser = webdriver.Chrome()
 
-    return request_to_indeed(browser, keyword, location, salary, experience)
-
-if __name__ == "__main__":
-    print(get_job_from_indeed("software engineer", "94704", "0", "ENTRY_LEVEL"))
+    return request_to_indeed(browser, keyword, location, str(salary), experience)
 

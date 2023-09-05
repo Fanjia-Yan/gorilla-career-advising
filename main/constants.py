@@ -1,4 +1,4 @@
-JOB_LEVEL_MAP = {
+LINKEDIN_JOB_LEVEL_MAP = {
     "internship" : "1",
     "entry level" : "2",
     "associate" : "3",
@@ -6,7 +6,15 @@ JOB_LEVEL_MAP = {
     "director" : "5",
     "executive" : "6"
 }
-JOB_LEVEL_MAP.setdefault("0")
+LINKEDIN_JOB_LEVEL_MAP.setdefault("0")
+
+INDEED_JOB_LEVEL_MAP = {
+    "entry level" : "ENTRY_LEVEL",
+    "mid level" : "MID_LEVEL",
+    "senior level" : "SENIOR_LEVEL"
+}
+INDEED_JOB_LEVEL_MAP.setdefault("ENTRY_LEVEL")
+
 class RefinementType:
     KEYWORD = "keyword"
     LOCATION = "location"

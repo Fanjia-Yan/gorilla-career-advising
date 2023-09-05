@@ -1,5 +1,5 @@
 import time,json
-from constants import JOB_LEVEL_MAP
+from constants import LINKEDIN_JOB_LEVEL_MAP, INDEED_JOB_LEVEL_MAP
 from typing import Dict
 from selenium.webdriver.chrome.webdriver import WebDriver;
 from selenium.common.exceptions import TimeoutException
@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 LINKEDIN_LOGIN_PAGE = "https://www.linkedin.com/login?trk=guest_homepage-basic_nav-header-signin"
 LINKEDIN_SEARCH_BY_KEYWORD = "https://www.linkedin.com/jobs/search/?&f_E=%s&keywords=%s&location=%s"
 LINKEDIN_DETAIL_PAGE = "https://www.linkedin.com/jobs/view/"
-INDEED_QUERY_PAGE = "https://www.indeed.com/jobs?q=%s&l=%s"
+INDEED_QUERY_PAGE = "https://www.indeed.com/jobs?q=%s&l=%s&sc=0kf:explvl(%s);"
 INDEED_PREFIX_DETAIL_PAGE = 'https://www.indeed.com/viewjob?jk=%s'
 
 def login_linkedin(browser : WebDriver, username : str, password : str) -> None:
@@ -40,7 +40,7 @@ def get_job_info_from_browser(browser: WebDriver, keyword : str, location : str,
     """
     browser.set_window_position(1, 1)
     browser.maximize_window()
-    browser.get(LINKEDIN_SEARCH_BY_KEYWORD % (JOB_LEVEL_MAP.get(experience.lower()),keyword,location))
+    browser.get(LINKEDIN_SEARCH_BY_KEYWORD % (LINKEDIN_JOB_LEVEL_MAP.get(experience.lower()),keyword,location))
     load_page(browser)
 
     # Obtain the job id from current page.
@@ -106,7 +106,7 @@ def request_to_indeed(browser: WebDriver,
                         salary : str,
                         experience : str
                         ) -> str:
-    query = INDEED_QUERY_PAGE % (keyword, location)
+    query = INDEED_QUERY_PAGE % (keyword + "+$" + salary, location, INDEED_JOB_LEVEL_MAP.get(experience.lower()))
     browser.get(query)
     
     soup = BeautifulSoup(browser.page_source, 'lxml')

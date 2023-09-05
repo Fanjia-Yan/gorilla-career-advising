@@ -6,7 +6,7 @@ setuptools.setup(
     description="API for getting job postings",
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
-    setup_requires=["lxml"],
+    install_requires=["lxml", "selenium", "bs4"]
     classifiers=[
         "Programming Language :: Python :: 3",
     ],
