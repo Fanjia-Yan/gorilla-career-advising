@@ -10,6 +10,8 @@ from bs4 import BeautifulSoup
 LINKEDIN_LOGIN_PAGE = "https://www.linkedin.com/login?trk=guest_homepage-basic_nav-header-signin"
 LINKEDIN_SEARCH_BY_KEYWORD = "https://www.linkedin.com/jobs/search/?&f_E=%s&keywords=%s&location=%s"
 LINKEDIN_DETAIL_PAGE = "https://www.linkedin.com/jobs/view/"
+INDEED_QUERY_PAGE = "https://www.indeed.com/jobs?q=%s&l=%s"
+INDEED_PREFIX_DETAIL_PAGE = 'https://www.indeed.com/viewjob?jk=%s'
 
 def login_linkedin(browser : WebDriver, username : str, password : str) -> None:
     """
@@ -97,3 +99,31 @@ def parse_job_details_from_current_page(page : BeautifulSoup) -> str:
     jobDetailDict["job description"]  = page.select(".jobs-description-content__text")[0].getText().strip("\n")
 
     return json.dumps(jobDetailDict)
+
+def request_to_indeed(browser: WebDriver,
+                        keyword : str,
+                        location : str,
+                        salary : str,
+                        experience : str
+                        ) -> str:
+    query = INDEED_QUERY_PAGE % (keyword, location)
+    browser.get(query)
+    
+    soup = BeautifulSoup(browser.page_source, 'lxml')
+    jobs = soup.find_all('div', class_='tapItem')
+    detailinfoMap = {}
+    for job in jobs:
+        detailInfo = {}
+        job_id = job.find('a')["id"].split('_')[-1]
+        job_title = job.find('span', title=True).text.strip()
+        company = job.find('span', class_='companyName').text.strip()
+        loc = job.find('div', class_='companyLocation').text.strip()
+        posted = job.find('span', class_='date').text.strip()
+        job_link = INDEED_PREFIX_DETAIL_PAGE % job_id
+        detailInfo["job title"] = job_title
+        detailInfo["company"] = company
+        detailInfo["location"] = loc
+        detailInfo["posting info"] = posted
+        detailInfo["job link"] = job_link
+        detailinfoMap[job_id] = detailInfo
+    return json.dumps(detailinfoMap)

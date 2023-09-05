@@ -1,6 +1,6 @@
 from typing import Dict
 from selenium import webdriver
-from utils import login_linkedin, get_job_info_from_browser
+from utils import login_linkedin, get_job_info_from_browser,request_to_indeed
 
 import json
 
@@ -41,4 +41,39 @@ def get_job_from_linkedin(username : str,
     jobInfo = get_job_info_from_browser(browser, keyword, location, experience)
     # Serialize job information and return it.
     return json.dumps(jobInfo)
+
+def get_job_from_indeed(keyword : str,
+                        location : str,
+                        salary : str,
+                        experience : str
+                        ) -> str:
+    """
+    Pull Job posting from indeed by searching based on keyword and location. 
+    No credential is required at Indeed.
+
+    Args:
+        keyword:
+            keyword that feed into Linkedin search engine. This can include experience level, field of 
+            expertise, company name. 
+        location:
+            Location of job. This takes inputs ranging from zipcode, city, country. 
+        salary:
+            Expected salary of the job.
+        experience:
+            six levels of job exerpeince: Entry, Mid, Senior.
+
+    Returns:
+        A json serialized response that contains up to 7 job ID corresponding to the detail information of
+        the job posting. 
+        {job title: ... , salary: ... , company size: ..., job description: ...}
+    """
+    # Make http request to indeed.com and fill in the request parameter.
+    
+    # Install Chrome Driver as the browser.
+    browser = webdriver.Chrome()
+
+    return request_to_indeed(browser, keyword, location, salary, experience)
+
+if __name__ == "__main__":
+    print(get_job_from_indeed("software engineer", "94704", "0", "ENTRY_LEVEL"))
 
